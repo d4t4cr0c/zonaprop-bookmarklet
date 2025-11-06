@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZonaProp Price Analyzer - Analizador de Precios</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📊</text></svg>">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #0e1a51 0%, #ff1111 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgb(239, 237, 237);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #096827 0%, #310062 100%);
+      color: white;
+      padding: 40px 30px;
+      text-align: center;
+     
+    }
+
+    header h1 {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: rgb(230, 230, 133)
+    }
+
+    header h3 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: rgb(238, 214, 214);
+    }
+
+    header p {
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    .content {
+      padding: 40px 30px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #334698;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #764ba2;
+    }
+
+    p, li {
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    ol {
+      margin-left: 20px;
+    }
+
+    .bookmarklet-box {
+      background: #f8f9fa;
+      border: 2px dashed #667eea;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+      text-align: center;
+    }
+
+    .bookmarklet-link {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: yellow;
+      padding: 16px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 18px;
+      margin: 12px 0;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: move;
+    }
+
+    .bookmarklet-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .copy-btn {
+      display: inline-block;
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #059669;
+    }
+
+    .copy-btn:active {
+      background: #047857;
+    }
+
+    .info-box {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+    }
+
+    .info-box p {
+      margin: 0;
+      color: #92400e;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .feature {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .feature h4 {
+      color: #667eea;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .feature p {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 14px;
+      color: #dc2626;
+    }
+
+    footer {
+      background: #f8f9fa;
+      padding: 24px 30px;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      header {
+        padding: 30px 20px;
+      }
+
+      header h1 {
+        font-size: 24px;
+      }
+
+      .content {
+        padding: 30px 20px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ZonaProp Price Analyzer</h1>
+      <h3>Analizá precios de propiedades en ZonaProp Argentina</h3>
+    </header>
+
+    <div class="content">
+
+      <section>
+        <h2>Instalación</h2>
+
+        <h3>Opción 1: Arrastrar a Bookmarks (Barra de Marcadores)</h3>
+        <div class="bookmarklet-box">
+          <p><strong>Arrastrá este botón a la barra de bookmarks del browser:</strong></p>
+          <a href="" class="bookmarklet-link" id="bookmarklet-link">📊 ZonaProp Analyzer</a>
+          <p style="font-size: 14px; color: #666; margin-top: 12px;">
+            (Si no ves la barra de bookmarks: Chrome/Edge: Ctrl+Shift+B, Safari: Cmd+Shift+B)
+          </p>
+        </div>
+
+        <h3>Opción 2: Copiar y crear manualmente</h3>
+        <ol>
+          <li>Click en el botón "Copiar código" de abajo</li>
+          <li>Abrir tu gestor de marcadores (Ctrl+Shift+O en Chrome, Cmd+Shift+B en Safari)</li>
+          <li>Crear un nuevo marcador</li>
+          <li>Dale un nombre (ej: "ZonaProp Analyzer")</li>
+          <li>Pegar el código copiado en el campo URL</li>
+          <li>Guardar el marcador</li>
+        </ol>
+
+        <div style="text-align: center; margin-top: 16px;">
+          <button class="copy-btn" onclick="copyBookmarklet()">📋 Copiar código del bookmarklet</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Cómo usar</h2>
+        <ol>
+          <li>Ingresá a <a href="https://www.zonaprop.com.ar" target="_blank" style="color: #667eea;">ZonaProp.com.ar</a></li>
+          <li>Busca propiedades (ej: "departamento 2 ambientes Colegiales")</li>
+          <li>En la página de resultados, dar click en el bookmarklet en tu barra de marcadores</li>
+          <li>Aparecerá una tarjeta flotante con el análisis de precios</li>
+          <li>Para analizar más páginas: navega a la siguiente página y volvé a dar click en el bookmarklet</li>
+          <li>Para reiniciar el análisis: dar click en el botón "Reiniciar" en la tarjeta</li>
+        </ol>
+
+        <div class="info-box">
+          <p><strong>💡 Tip:</strong> La tarjeta es movible. Da click y arrastra desde el encabezado para reposicionarla y poder ver el contenido detrás.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Características</h2>
+        <ul>
+          <li><strong>Análisis automático:</strong> Extrae precios y tamaños de todas las propiedades visibles</li>
+          <li><strong>Estadísticas en tiempo real:</strong> Calcula promedios, medianas, y rangos de precios</li>
+          <li><strong>Histograma visual:</strong> Muestra la distribución de precios por metro cuadrado</li>
+          <li><strong>Acumulación multi-página:</strong> Los datos se guardan entre páginas para análisis completo</li>
+          <li><strong>Interfaz arrastrable:</strong> Mueve la tarjeta para no obstruir el contenido</li>
+          <li><strong>Reinicio fácil:</strong> Borra todos los datos acumulados con un clic</li>
+        </ul>
+      </section>
+
+    </div>
+
+    <footer>
+      <p>Hecho con ❤️ para facilitar la búsqueda de propiedades</p>
+      <p><a href="https://github.com" target="_blank">Ver código fuente en GitHub</a></p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast">¡Código copiado al portapapeles!</div>
+
+  <script>
+    // Load the bookmarklet source from external file
+    fetch('src/zonaprop-analyzer.js')
+      .then(response => response.text())
+      .then(bookmarkletSource => {
+        // Create the bookmarklet URL
+        const bookmarkletURL = 'javascript:' + encodeURIComponent(bookmarkletSource);
+
+        // Set the href for the drag-and-drop link
+        const linkElement = document.getElementById('bookmarklet-link');
+        if (linkElement) {
+          linkElement.href = bookmarkletURL;
+
+          // Prevent clicking - only allow dragging
+          linkElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            //alert('Por favor, arrastrá este botón a tu barra de marcadores en lugar de hacer clic.');
+            return false;
+          });
+        } else {
+          console.error('[Index] Could not find bookmarklet-link element!');
+        }
+
+        // Copy function
+        window.copyBookmarklet = function() {
+          navigator.clipboard.writeText(bookmarkletURL).then(() => {
+            showToast();
+          }).catch(err => {
+            console.error('Error copying to clipboard:', err);
+            alert('Error al copiar. Por favor, intenta seleccionar y copiar manualmente.');
+          });
+        };
+      })
+      .catch(error => {
+        console.error('[Index] Error loading bookmarklet source:', error);
+        alert('Error al cargar el bookmarklet. Por favor, recarga la página.');
+      });
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
