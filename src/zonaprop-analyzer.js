@@ -323,7 +323,7 @@
         <h3 style="margin: 0; font-size: 24px; font-weight: 600; color: #e0e0e0;">ZonaProp Analyzer</h3>
         <button id="zonaprop-close-btn" style="background: none; border: none; color: #e0e0e0; font-size: 24px; cursor: pointer; padding: 0; line-height: 1;">&times;</button>
       </div>
-      <div style="font-size: 12px; margin-top: 24px; opacity: 0.8; color: #e0e0e0;">${propertyType}</div>
+      <div id="zonaprop-property-type" style="font-size: 12px; margin-top: 24px; opacity: 0.8; color: #e0e0e0;">${propertyType}</div>
     `;
 
     // Content
@@ -396,7 +396,7 @@
     // Reset button
     const resetBtn = document.getElementById('zonaprop-reset-btn');
     resetBtn.addEventListener('click', () => {
- 
+
         sessionStorage.removeItem(STORAGE_KEY);
 
         // Rescrape current page
@@ -417,6 +417,12 @@
           const contentElement = document.getElementById('zonaprop-content');
           if (contentElement) {
             updateCardContent(contentElement, stats);
+          }
+
+          // Update header with new property type
+          const propertyTypeElement = document.getElementById('zonaprop-property-type');
+          if (propertyTypeElement) {
+            propertyTypeElement.textContent = propertyType;
           }
 
           console.log('[ZonaProp Analyzer] Reset complete. Found', newProperties.length, 'properties on current page');
